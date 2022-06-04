@@ -22,6 +22,8 @@ int main(int argc, char* argv[]) try {
     if (!object_metadata)
       std::cout << "has no md\n";
     else {
+      std::cout << "Got OK object_metadata " << object_metadata->kind()
+                << std::endl;
       std::cout << object_metadata->name() << "has md, size: "
                 << object_metadata->size() << std::endl;
 

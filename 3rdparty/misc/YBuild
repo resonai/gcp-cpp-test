@@ -75,7 +75,6 @@ CustomInstaller(
     '-labsl_hash',
     '-labsl_city',
     '-labsl_flags_usage_internal',
-    '-labsl_wyhash',
     '-labsl_statusor',
     '-labsl_throw_delegate',
     '-labsl_bad_optional_access',
