@@ -21,6 +21,11 @@ AptRepository(
     source='deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main',
     key='6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',
 )
+AptRepository(
+    'llvm-14-repository',
+    source='deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main',
+    key='6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',
+)
 AptPackage(
     'libssl-dev',
     package='libssl-dev',

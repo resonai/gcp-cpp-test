@@ -1,22 +1,57 @@
 
-CustomInstaller(
-  #TODO(David): seperate clang+llvm from the libraries. The first is build, the
-  # second is build + run.
-  # Following Amis suggestion,we can use the names
-  # c_c++_build_chain and c_c++_run_chain
-    'clang',
-    uri='',
-    deps=[
-          '//3rdparty/apt:software-properties-common',
-          '//3rdparty/apt:libllvm-ocaml-dev',
-          '//3rdparty/apt:llvm',
-          '//3rdparty/apt:llvm-doc',
-          '//3rdparty/apt:clang',
-          '//3rdparty/apt:libcplusplus-dev',
-          '//3rdparty/apt:libcplusplus-abi-dev',
-         ],
-    script='install-llvm.sh',
+# CustomInstaller(
+#   #TODO(David): seperate clang+llvm from the libraries. The first is build, the
+#   # second is build + run.
+#   # Following Amis suggestion,we can use the names
+#   # c_c++_build_chain and c_c++_run_chain
+#     'clang',
+#     uri='',
+#     deps=[
+#           '//3rdparty/apt:software-properties-common',
+#           '//3rdparty/apt:libllvm-ocaml-dev',
+#           '//3rdparty/apt:llvm',
+#           '//3rdparty/apt:llvm-doc',
+#           '//3rdparty/apt:clang',
+#           '//3rdparty/apt:libcplusplus-dev',
+#           '//3rdparty/apt:libcplusplus-abi-dev',
+#          ],
+#     script='install-llvm.sh',
+# )
+
+
+AptPackage(
+  'libc-14-dev',
+  package='libc++-14-dev',
+  deps=[
+    '//3rdparty/apt:llvm-14-repository',
+  ],
 )
+
+AptPackage(
+  'libcabi-14-dev',
+  package='libc++abi-14-dev',
+  deps=[
+    '//3rdparty/apt:llvm-14-repository',
+  ],
+)
+AptPackage(
+  'clang-14',
+  package='clang-14',
+  deps=[
+    '//3rdparty/apt:llvm-14-repository',
+    ':libc-14-dev',
+    ':libcabi-14-dev',
+  ],
+)
+CustomInstaller(
+  'clang',
+  uri='',
+  deps=[
+    ':clang-14',
+  ],
+  script='install-llvm.sh',
+)
+
 
 CustomInstaller(
     'protobuf',
