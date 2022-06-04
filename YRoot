@@ -40,10 +40,44 @@ CppProg(
   },
   in_buildenv=':google-cloud-cpp-test-image'
 )
+
+CppProg('idiot_repro',
+  sources='idiot_repro.cc',
+  deps=[
+    '//3rdparty/misc:google-cloud-cpp',
+    ':repro_from_cmake',
+  ],
+  build_params={
+  },
+  in_buildenv=':google-cloud-cpp-test-image'
+)
+
 CppApp(
   'run_repro',
   base_image=':google-cloud-cpp-test-image',
   main=':repro',
+  runtime_params={
+    'rm': True,
+    'volumes': [
+      '$HOME:/h',
+    ],
+    'env': {
+      'HOME': '/h',
+    }
+  },
+)
+
+CustomInstaller(
+  'repro_from_cmake',
+  uri='',
+  deps='//3rdparty/misc:google-cloud-cpp',
+  script='repro_from_image.sh',
+)
+
+CppApp(
+  'run_idiot_repro',
+  base_image=':google-cloud-cpp-test-image',
+  main=':idiot_repro',
   runtime_params={
     'rm': True,
     'volumes': [

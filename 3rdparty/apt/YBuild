@@ -16,14 +16,14 @@ AptPackage(
     'gnupg',
     package='gnupg'
 )
-AptRepository(
-    'llvm-13-repository',
-    source='deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main',
-    key='6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',
-)
+#AptRepository(
+#    'llvm-13-repository',
+#    source='deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main',
+#    key='6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',
+#)
 AptRepository(
     'llvm-14-repository',
-    source='deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main',
+    source='deb http://apt.llvm.org/focal/ llvm-toolchain-jammy-14 main',
     key='6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',
 )
 AptPackage(
@@ -32,16 +32,16 @@ AptPackage(
     build_params={'extra_link_flags': ['-lcrypto', '-lssl']}
 )
 
-AptPackage(
-    'libllvm-ocaml-dev',
-    package='libllvm-13-ocaml-dev',
-    deps=':llvm-13-repository'
-)
-AptPackage(
-    'llvm-doc',
-    package='llvm-13-doc',
-    deps=':llvm-13-repository'
-)
+#AptPackage(
+#    'libllvm-ocaml-dev',
+#    package='libllvm-13-ocaml-dev',
+#    deps=':llvm-13-repository'
+#)
+#AptPackage(
+#    'llvm-doc',
+#    package='llvm-13-doc',
+#    deps=':llvm-13-repository'
+#)
 
 
 AptPackage(
@@ -67,17 +67,17 @@ AptPackage(
     'gcc',  # in ywz-ubuntu
     package='gcc'
 )
-AptPackage(
-    'libcplusplus-dev',
-    package='libc++-13-dev',
-    deps=':llvm-13-repository'
-)
+#AptPackage(
+#    'libcplusplus-dev',
+#    package='libc++-13-dev',
+#    deps=':llvm-13-repository'
+#)
 
-AptPackage(
-    'libcplusplus-abi-dev',
-    package='libc++abi-13-dev',
-    deps=':llvm-13-repository'
-)
+#AptPackage(
+#    'libcplusplus-abi-dev',
+#    package='libc++abi-13-dev',
+#    deps=':llvm-13-repository'
+#)
 AptPackage('zlib', package='zlib1g-dev',
            build_params={'extra_link_flags': ['-lz']})
 AptPackage(
@@ -85,17 +85,17 @@ AptPackage(
     package='software-properties-common'
 )
 
-AptPackage(
-    'llvm',
-    package='llvm-13',
-    deps=':llvm-13-repository'
-)
+#AptPackage(
+#    'llvm',
+#    package='llvm-13',
+#    deps=':llvm-13-repository'
+#)
 
-AptPackage(
-    'clang',
-    package='clang-13',
-    deps=':llvm-13-repository'
-)
+#AptPackage(
+#    'clang',
+#    package='clang-13',
+#    deps=':llvm-13-repository'
+#)
 
 AptPackage('autoconf', package='autoconf')
 AptPackage('automake', package='automake')
