@@ -1,0 +1,37 @@
+AptPackage('autoconf', package='autoconf')
+AptPackage('automake', package='automake')
+AptPackage('build-essential', package='build-essential')
+AptPackage('curl', package='curl',
+           build_params={'extra_link_flags': ['-lcurl']})
+AptPackage('libcurl4-openssl-dev', package='libcurl4-openssl-dev',
+           build_params={'extra_link_flags': ['-lcurl']})
+AptPackage('libtool', package='libtool')
+AptPackage('pkg-config', package='pkg-config')
+AptPackage('unzip', package='unzip')
+
+TargetGroup(
+    'build-pack',
+    deps=[
+        ':autoconf',
+        ':automake',
+        ':build-essential',
+        ':ca-certificates',
+        ':curl',
+        ':gcc',
+        ':libtool',
+        ':make',
+        ':pkg-config',
+        ':unzip',
+        ':zlib',
+    ]
+)
+
+AptPackage(
+    'openssl',
+    package='openssl'
+)
+
+AptPackage(
+    'cmake',
+    package='cmake'
+)

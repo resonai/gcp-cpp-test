@@ -1,0 +1,8 @@
+## generic files to ignore
+*~
+*.pyc
+*.pyo
+__pycache__
+
+yabtwork
+ybt_bin

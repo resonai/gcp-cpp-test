@@ -1,0 +1,56 @@
+
+ExtDockerImage(
+    'ubuntu-20.04',
+    image='ubuntu',
+    tag='focal-20220316',
+    distro={
+        'id': 'Ubuntu',
+        'release': '20.04',
+        'codename': 'Focal Fossa',
+        'description': 'Ubuntu 20.04.4 LTS',
+    }
+)
+DockerImage(
+    'ubuntu-20.04-plus',
+    base_image=':ubuntu-20.04',
+    deps=[
+        '//3rdparty/apt:apt-transport-https',
+        '//3rdparty/apt:ca-certificates',
+        '//3rdparty/apt:apt-utils',
+        '//3rdparty/apt:curl',
+        '//3rdparty/apt:gnupg',
+    ],
+)
+
+DockerImage(
+  'google-cloud-cpp-test-image',
+  base_image=':ubuntu-20.04-plus',
+  deps=[
+    '//3rdparty/misc:google-cloud-cpp',
+  ],
+)
+
+CppProg(
+  'repro',
+  sources='repro.cc',
+  deps=[
+    '//3rdparty/misc:google-cloud-cpp',
+  ],
+  build_params={
+  },
+  in_buildenv=':google-cloud-cpp-test-image'
+)
+CppApp(
+  'run_repro',
+  base_image=':google-cloud-cpp-test-image',
+  main=':repro',
+  runtime_params={
+    'rm': True,
+    'volumes': [
+      '$HOME:/h',
+    ],
+    'env': {
+      'HOME': '/h',
+    }
+  },
+)

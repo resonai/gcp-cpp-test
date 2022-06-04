@@ -1,0 +1,225 @@
+
+CustomInstaller(
+  #TODO(David): seperate clang+llvm from the libraries. The first is build, the
+  # second is build + run.
+  # Following Amis suggestion,we can use the names
+  # c_c++_build_chain and c_c++_run_chain
+    'clang',
+    uri='',
+    deps=[
+          '//3rdparty/apt:software-properties-common',
+          '//3rdparty/apt:libllvm-ocaml-dev',
+          '//3rdparty/apt:llvm',
+          '//3rdparty/apt:llvm-doc',
+          '//3rdparty/apt:clang',
+          '//3rdparty/apt:libcplusplus-dev',
+          '//3rdparty/apt:libcplusplus-abi-dev',
+         ],
+    script='install-llvm.sh',
+)
+
+CustomInstaller(
+    'protobuf',
+    uri='https://github.com/protocolbuffers/protobuf/releases/download/v3.18.0/protobuf-all-3.18.0.tar.gz',
+    # TODO(EyalR) move to jfrog/gcs
+    script='install-protobuf.sh',
+    deps=[
+        '//3rdparty/apt:cmake',
+        '//3rdparty/apt:openssl',
+        '//3rdparty/apt:build-pack',
+        ':clang'
+    ],
+    build_params={
+        'extra_link_flags': '-lprotobuf',
+    },
+    license='BSD-3-Clause',
+)
+CustomInstaller(
+    'gflags-dev',  # version 2.2.2
+    uri='https://github.com/gflags/gflags/archive/v2.2.2.tar.gz',
+    script='install-gflags.sh',
+    deps=['//3rdparty/apt:cmake', '//3rdparty/apt:make', ':clang',],
+    build_params={
+        'extra_link_flags': '-lgflags',
+    },
+  license='BSD-3-Clause',
+)
+
+CustomInstaller(
+    'abseil',
+    uri='https://github.com/abseil/abseil-cpp/archive/refs/tags/20210324.2.tar.gz',
+    script='install-abseil.sh',
+    deps=[
+        ':clang',
+        ':protobuf',
+        ':gflags-dev',
+    ],
+  build_params={'extra_link_flags': [
+    '-labsl_strings',
+    '-labsl_strings_internal',
+    '-labsl_str_format_internal',
+    '-labsl_synchronization',
+    '-labsl_base',
+    '-labsl_raw_logging_internal',
+    '-labsl_malloc_internal',
+    '-labsl_spinlock_wait',
+    '-labsl_time',
+    '-labsl_time_zone',
+    '-labsl_int128',
+    '-labsl_stacktrace',
+    '-labsl_symbolize',
+    '-labsl_debugging_internal',
+    '-labsl_demangle_internal',
+    '-labsl_status',
+    '-labsl_cord',
+    '-labsl_hash',
+    '-labsl_city',
+    '-labsl_flags_usage_internal',
+    '-labsl_wyhash',
+    '-labsl_statusor',
+    '-labsl_throw_delegate',
+    '-labsl_bad_optional_access',
+    '-labsl_bad_variant_access',
+    '-labsl_random_seed_sequences',
+    '-labsl_random_internal_pool_urbg',
+    '-labsl_random_internal_randen',
+    '-labsl_random_internal_randen_slow',
+    '-labsl_random_internal_randen_hwaes_impl',
+    '-labsl_random_internal_randen_hwaes',
+    '-labsl_random_internal_platform',
+    '-labsl_random_internal_seed_material',
+    '-labsl_random_seed_gen_exception',
+  ]},
+  license='Apache-2.0',
+)
+
+
+CustomInstaller(
+    'nlohmann-json',
+    uri='https://github.com/nlohmann/json/releases/download/v3.10.5/json.hpp',
+    script='install-nlohmann-json.sh',
+    deps=[
+    ],
+)
+
+CustomInstaller(
+    'benchmark', #version 1.5.2
+    uri='https://github.com/google/benchmark/archive/v1.5.2.tar.gz',
+    script='install-benchmark.sh',
+    deps=[
+    ':clang'
+    ],
+    build_params={'extra_link_flags': ['-lgrpc++']},
+    license='Apache-2.0',
+)
+
+CustomInstaller(
+    'c-ares',
+    uri='https://github.com/c-ares/c-ares/archive/cares-1_18_1.tar.gz',
+    #uri='https://yowza:yowza@yowza.jfrog.io/yowza/local/c-ares-cares-1_13_0.tar.gz',
+    script='install-cares.sh',
+    deps=':clang',
+    build_params={'extra_link_flags': ['-lcares']}
+)
+CustomInstaller(
+    'glog',  # version 0.3.5 custom-built with msecs in timestamp & no symlink
+    #uri='https://github.com/google/glog/archive/v0.3.5.tar.gz',
+    # built from glog fork https://bitbucket.org/yowza3d/glog/branch/v035_with_msec_no_symlink
+    uri='https://yowza:yowza@yowza.jfrog.io/yowza/local/glog-0.3.5-with-msec-no-symlink.tar.gz',
+    script='install-glog.sh',
+    # gflags is needed for glog when compiling from source in order to allow
+    # compiled binaries to support GLOG log-control flags
+    deps=[':gflags-dev',
+          '//3rdparty/apt:cmake',
+          '//3rdparty/apt:make',
+          ':clang'],
+    build_params={
+        'extra_link_flags': '-lglog',
+    },
+  license='Apache-2.0',
+)
+
+CustomInstaller(
+    're2',
+    uri='https://github.com/google/re2/archive/refs/tags/2021-11-01.tar.gz',
+    script='install-re2.sh',
+    deps=[
+        ':clang',
+        ':protobuf',
+        ':glog',
+       ':gflags-dev',
+    ],
+  build_params={'extra_link_flags': ['-lre2', '-lgpr', '-lupb', '-laddress_sorting']},
+  license='Apache-2.0',
+)
+
+CustomInstaller(
+    'grpc',
+    uri='https://github.com/grpc/grpc/archive/v1.43.0.tar.gz',
+    script='install-grpc.sh',
+    deps=[
+        ':clang',
+        '//3rdparty/apt:libssl-dev',
+        '//3rdparty/apt:build-pack',
+        ':c-ares',
+        ':benchmark',
+        ':protobuf',
+        ':gflags-dev',
+        '//3rdparty/apt:libcurl4-openssl-dev',
+        ':abseil',
+        ':re2',
+    ],
+    build_params={'extra_link_flags': ['-lgrpc++', '-lgrpc']},
+  license='Apache-2.0',
+)
+CustomInstaller(
+    'crc32', # version 1.1.0
+    uri='https://github.com/google/crc32c/archive/1.1.0.tar.gz',
+    # TODO(EyalR) move to jfrog
+    script='install-crc32.sh',
+    deps=[
+        ':clang'
+    ],
+    build_params={
+        'extra_link_flags': '-lcrc32c',
+    },
+    license='BSD-3-Clause',
+    # WARNING this is not the license, they just say it is "BSD-style"
+)
+
+CustomInstaller(
+    'google-cloud-cpp',
+    uri='https://github.com/googleapis/google-cloud-cpp/archive/v1.40.2.tar.gz',
+    script='install-google-cloud-cpp.sh',
+    deps=[
+      ':clang',
+      ':abseil',
+      ':grpc',
+      ':protobuf',
+      ':crc32',
+      '//3rdparty/apt:openssl',
+      ':nlohmann-json',
+    ],
+    # generated with pkg-config google_cloud_cpp_storage --libs
+    build_params={'extra_link_flags': ['-lgoogle_cloud_cpp_storage',
+                                       '-lcrc32c',
+                                       '-lgoogle_cloud_cpp_common',
+                                       '-labsl_bad_optional_access',
+                                       '-lcurl',
+                                       '-lssl',
+                                       '-lcrypto',
+                                       '-labsl_str_format_internal',
+                                       '-labsl_time',
+                                       '-labsl_civil_time',
+                                       '-labsl_strings',
+                                       '-labsl_strings_internal',
+                                       '-lrt',
+                                       '-labsl_base',
+                                       '-labsl_spinlock_wait',
+                                       '-labsl_int128',
+                                       '-labsl_throw_delegate',
+                                       '-labsl_time_zone',
+                                       '-labsl_bad_variant_access',
+                                       '-labsl_raw_logging_internal',
+                                       '-labsl_log_severity']}
+)

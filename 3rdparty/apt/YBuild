@@ -1,0 +1,126 @@
+AptPackage(
+    'apt-transport-https',
+    package='apt-transport-https'
+)
+AptPackage(
+    'apt-utils',
+    package='apt-utils'
+)
+
+AptPackage(
+    'gnupg',
+    package='gnupg'
+)
+AptRepository(
+    'llvm-13-repository',
+    source='deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main',
+    key='6084F3CF814B57C1CF12EFD515CF4D18AF4F7421',
+)
+AptPackage(
+    'libssl-dev',
+    package='libssl-dev',
+    build_params={'extra_link_flags': ['-lcrypto', '-lssl']}
+)
+
+AptPackage(
+    'libllvm-ocaml-dev',
+    package='libllvm-13-ocaml-dev',
+    deps=':llvm-13-repository'
+)
+AptPackage(
+    'llvm-doc',
+    package='llvm-13-doc',
+    deps=':llvm-13-repository'
+)
+
+
+AptPackage(
+    'make',
+    package='make',
+)
+
+AptPackage(
+    'ca-certificates',
+    package='ca-certificates',
+)
+
+AptPackage(
+    'gplusplus',
+    package='g++',
+)
+
+AptPackage(
+    'autogen',
+    package='autogen',
+)
+AptPackage(
+    'gcc',  # in ywz-ubuntu
+    package='gcc'
+)
+AptPackage(
+    'libcplusplus-dev',
+    package='libc++-13-dev',
+    deps=':llvm-13-repository'
+)
+
+AptPackage(
+    'libcplusplus-abi-dev',
+    package='libc++abi-13-dev',
+    deps=':llvm-13-repository'
+)
+AptPackage('zlib', package='zlib1g-dev',
+           build_params={'extra_link_flags': ['-lz']})
+AptPackage(
+    'software-properties-common',
+    package='software-properties-common'
+)
+
+AptPackage(
+    'llvm',
+    package='llvm-13',
+    deps=':llvm-13-repository'
+)
+
+AptPackage(
+    'clang',
+    package='clang-13',
+    deps=':llvm-13-repository'
+)
+
+AptPackage('autoconf', package='autoconf')
+AptPackage('automake', package='automake')
+AptPackage('build-essential', package='build-essential')
+AptPackage('curl', package='curl',
+           build_params={'extra_link_flags': ['-lcurl']})
+AptPackage('libcurl4-openssl-dev', package='libcurl4-openssl-dev',
+           build_params={'extra_link_flags': ['-lcurl']})
+AptPackage('libtool', package='libtool')
+AptPackage('pkg-config', package='pkg-config')
+AptPackage('unzip', package='unzip')
+
+TargetGroup(
+    'build-pack',
+    deps=[
+        ':autoconf',
+        ':automake',
+        ':build-essential',
+        ':ca-certificates',
+        ':curl',
+        ':gcc',
+        ':libtool',
+        ':make',
+        ':pkg-config',
+        ':unzip',
+        ':zlib',
+    ]
+)
+
+AptPackage(
+    'openssl',
+    package='openssl'
+)
+
+AptPackage(
+    'cmake',
+    package='cmake'
+)

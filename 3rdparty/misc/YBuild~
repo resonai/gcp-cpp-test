@@ -1,0 +1,38 @@
+
+
+CustomInstaller(
+    'google-cloud-cpp',
+    uri='https://github.com/googleapis/google-cloud-cpp/archive/v1.40.2.tar.gz',
+    script='install-google-cloud-cpp.sh',
+    deps=[
+      ':clang',
+      ':abseil',
+      ':grpc',
+      ':protobuf',
+      ':crc32',
+      '//3rdparty/apt:openssl',
+      ':nlohmann-json',
+    ],
+    # generated with pkg-config google_cloud_cpp_storage --libs
+    build_params={'extra_link_flags': ['-lgoogle_cloud_cpp_storage',
+                                       '-lcrc32c',
+                                       '-lgoogle_cloud_cpp_common',
+                                       '-labsl_bad_optional_access',
+                                       '-lcurl',
+                                       '-lssl',
+                                       '-lcrypto',
+                                       '-labsl_str_format_internal',
+                                       '-labsl_time',
+                                       '-labsl_civil_time',
+                                       '-labsl_strings',
+                                       '-labsl_strings_internal',
+                                       '-lrt',
+                                       '-labsl_base',
+                                       '-labsl_spinlock_wait',
+                                       '-labsl_int128',
+                                       '-labsl_throw_delegate',
+                                       '-labsl_time_zone',
+                                       '-labsl_bad_variant_access',
+                                       '-labsl_raw_logging_internal',
+                                       '-labsl_log_severity']}
+)

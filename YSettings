@@ -1,0 +1,13 @@
+
+def get_common_config(config, args):
+    clang = 'clang++'
+    return {
+        'compiler': clang,
+        'linker': clang,
+        'compile_flags': [
+            '-std=c++17', '-Wall', '-fvectorize', '-fslp-vectorize',
+            '-fcolor-diagnostics', '-stdlib=libc++'],
+        'include_path': ['/usr/include/libcxxabi'],
+        'link_flags': ['-stdlib=libc++', '-lc++'],
+        'proto_gen_dir': 'ybtproto',
+    }
