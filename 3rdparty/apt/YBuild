@@ -8,6 +8,11 @@ AptPackage(
 )
 
 AptPackage(
+    'ninja-build',
+    package='ninja-build'
+)
+
+AptPackage(
     'gnupg',
     package='gnupg'
 )
@@ -112,6 +117,7 @@ TargetGroup(
         ':pkg-config',
         ':unzip',
         ':zlib',
+        ':ninja-build',
     ]
 )
 

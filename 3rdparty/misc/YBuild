@@ -20,7 +20,7 @@ CustomInstaller(
 
 CustomInstaller(
     'protobuf',
-    uri='https://github.com/protocolbuffers/protobuf/releases/download/v3.18.0/protobuf-all-3.18.0.tar.gz',
+    uri='https://github.com/protocolbuffers/protobuf/archive/v3.20.1.tar.gz',
     # TODO(EyalR) move to jfrog/gcs
     script='install-protobuf.sh',
     deps=[
@@ -47,7 +47,7 @@ CustomInstaller(
 
 CustomInstaller(
     'abseil',
-    uri='https://github.com/abseil/abseil-cpp/archive/refs/tags/20210324.2.tar.gz',
+    uri='https://github.com/abseil/abseil-cpp/archive/20211102.0.tar.gz',
     script='install-abseil.sh',
     deps=[
         ':clang',
@@ -96,9 +96,10 @@ CustomInstaller(
 
 CustomInstaller(
     'nlohmann-json',
-    uri='https://github.com/nlohmann/json/releases/download/v3.10.5/json.hpp',
+    uri='https://github.com/nlohmann/json/archive/v3.10.5.tar.gz',
     script='install-nlohmann-json.sh',
     deps=[
+      ':clang'
     ],
 )
 
@@ -113,13 +114,9 @@ CustomInstaller(
     license='Apache-2.0',
 )
 
-CustomInstaller(
-    'c-ares',
-    uri='https://github.com/c-ares/c-ares/archive/cares-1_18_1.tar.gz',
-    #uri='https://yowza:yowza@yowza.jfrog.io/yowza/local/c-ares-cares-1_13_0.tar.gz',
-    script='install-cares.sh',
-    deps=':clang',
-    build_params={'extra_link_flags': ['-lcares']}
+AptPackage(
+  'c-ares',
+  package='libc-ares-dev'
 )
 CustomInstaller(
     'glog',  # version 0.3.5 custom-built with msecs in timestamp & no symlink
@@ -141,7 +138,7 @@ CustomInstaller(
 
 CustomInstaller(
     're2',
-    uri='https://github.com/google/re2/archive/refs/tags/2021-11-01.tar.gz',
+    uri='https://github.com/google/re2/archive/2022-04-01.tar.gz',
     script='install-re2.sh',
     deps=[
         ':clang',
@@ -155,7 +152,7 @@ CustomInstaller(
 
 CustomInstaller(
     'grpc',
-    uri='https://github.com/grpc/grpc/archive/v1.43.0.tar.gz',
+    uri='https://github.com/grpc/grpc/archive/v1.46.3.tar.gz',
     script='install-grpc.sh',
     deps=[
         ':clang',
@@ -173,8 +170,8 @@ CustomInstaller(
   license='Apache-2.0',
 )
 CustomInstaller(
-    'crc32', # version 1.1.0
-    uri='https://github.com/google/crc32c/archive/1.1.0.tar.gz',
+    'crc32',
+    uri='https://github.com/google/crc32c/archive/1.1.2.tar.gz',
     # TODO(EyalR) move to jfrog
     script='install-crc32.sh',
     deps=[
