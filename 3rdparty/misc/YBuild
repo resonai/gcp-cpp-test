@@ -23,7 +23,7 @@ AptPackage(
   'libc-14-dev',
   package='libc++-14-dev',
   deps=[
-    '//3rdparty/apt:llvm-14-repository',
+    #'//3rdparty/apt:llvm-14-repository',
   ],
 )
 
@@ -31,14 +31,14 @@ AptPackage(
   'libcabi-14-dev',
   package='libc++abi-14-dev',
   deps=[
-    '//3rdparty/apt:llvm-14-repository',
+    #'//3rdparty/apt:llvm-14-repository',
   ],
 )
 AptPackage(
   'clang-14',
   package='clang-14',
   deps=[
-    '//3rdparty/apt:llvm-14-repository',
+    #'//3rdparty/apt:llvm-14-repository',
     ':libc-14-dev',
     ':libcabi-14-dev',
   ],
