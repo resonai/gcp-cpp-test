@@ -1,23 +1,4 @@
 
-# CustomInstaller(
-#   #TODO(David): seperate clang+llvm from the libraries. The first is build, the
-#   # second is build + run.
-#   # Following Amis suggestion,we can use the names
-#   # c_c++_build_chain and c_c++_run_chain
-#     'clang',
-#     uri='',
-#     deps=[
-#           '//3rdparty/apt:software-properties-common',
-#           '//3rdparty/apt:libllvm-ocaml-dev',
-#           '//3rdparty/apt:llvm',
-#           '//3rdparty/apt:llvm-doc',
-#           '//3rdparty/apt:clang',
-#           '//3rdparty/apt:libcplusplus-dev',
-#           '//3rdparty/apt:libcplusplus-abi-dev',
-#          ],
-#     script='install-llvm.sh',
-# )
-
 
 AptPackage(
   'libc-14-dev',
@@ -59,9 +40,6 @@ CustomInstaller(
     # TODO(EyalR) move to jfrog/gcs
     script='install-protobuf.sh',
     deps=[
-        '//3rdparty/apt:cmake',
-        '//3rdparty/apt:openssl',
-        '//3rdparty/apt:build-pack',
         ':clang'
     ],
     build_params={
@@ -70,24 +48,12 @@ CustomInstaller(
     license='BSD-3-Clause',
 )
 CustomInstaller(
-    'gflags-dev',  # version 2.2.2
-    uri='https://github.com/gflags/gflags/archive/v2.2.2.tar.gz',
-    script='install-gflags.sh',
-    deps=['//3rdparty/apt:cmake', '//3rdparty/apt:make', ':clang',],
-    build_params={
-        'extra_link_flags': '-lgflags',
-    },
-  license='BSD-3-Clause',
-)
-
-CustomInstaller(
     'abseil',
     uri='https://github.com/abseil/abseil-cpp/archive/20211102.0.tar.gz',
     script='install-abseil.sh',
     deps=[
         ':clang',
         ':protobuf',
-        ':gflags-dev',
     ],
   build_params={'extra_link_flags': [
     '-labsl_strings',
@@ -137,37 +103,9 @@ CustomInstaller(
     ],
 )
 
-CustomInstaller(
-    'benchmark', #version 1.5.2
-    uri='https://github.com/google/benchmark/archive/v1.5.2.tar.gz',
-    script='install-benchmark.sh',
-    deps=[
-    ':clang'
-    ],
-    build_params={'extra_link_flags': ['-lgrpc++']},
-    license='Apache-2.0',
-)
-
 AptPackage(
   'c-ares',
   package='libc-ares-dev'
-)
-CustomInstaller(
-    'glog',  # version 0.3.5 custom-built with msecs in timestamp & no symlink
-    #uri='https://github.com/google/glog/archive/v0.3.5.tar.gz',
-    # built from glog fork https://bitbucket.org/yowza3d/glog/branch/v035_with_msec_no_symlink
-    uri='https://yowza:yowza@yowza.jfrog.io/yowza/local/glog-0.3.5-with-msec-no-symlink.tar.gz',
-    script='install-glog.sh',
-    # gflags is needed for glog when compiling from source in order to allow
-    # compiled binaries to support GLOG log-control flags
-    deps=[':gflags-dev',
-          '//3rdparty/apt:cmake',
-          '//3rdparty/apt:make',
-          ':clang'],
-    build_params={
-        'extra_link_flags': '-lglog',
-    },
-  license='Apache-2.0',
 )
 
 CustomInstaller(
@@ -177,8 +115,6 @@ CustomInstaller(
     deps=[
         ':clang',
         ':protobuf',
-        ':glog',
-       ':gflags-dev',
     ],
   build_params={'extra_link_flags': ['-lre2', '-lgpr', '-lupb', '-laddress_sorting']},
   license='Apache-2.0',
@@ -190,13 +126,7 @@ CustomInstaller(
     script='install-grpc.sh',
     deps=[
         ':clang',
-        '//3rdparty/apt:libssl-dev',
-        '//3rdparty/apt:build-pack',
-        ':c-ares',
-        ':benchmark',
         ':protobuf',
-        ':gflags-dev',
-        '//3rdparty/apt:libcurl4-openssl-dev',
         ':abseil',
         ':re2',
     ],
@@ -228,7 +158,6 @@ CustomInstaller(
       ':grpc',
       ':protobuf',
       ':crc32',
-      '//3rdparty/apt:openssl',
       ':nlohmann-json',
     ],
     # generated with pkg-config google_cloud_cpp_storage --libs

@@ -1,0 +1,291 @@
+
+#FROM ubuntu:22.04
+ExtDockerImage(
+    'ubuntu-22.04',
+    image='ubuntu',
+    tag='22.04',
+    distro={
+        'id': 'Ubuntu',
+        'release': '22.04',
+        #'codename': 'Focal Fossa',
+        'description': 'Ubuntu 22.04.4 LTS',
+    }
+)
+
+AptPackage('ca-certificates', package='ca-certificates',)
+AptPackage('git', package='git',)
+AptPackage('tar', package='tar',)
+AptPackage('zip', package='zip',)
+AptPackage('unzip', package='unzip',)
+AptPackage('build-essential', package='build-essential',)
+AptPackage('ccache', package='ccache',)
+AptPackage('cmake', package='cmake',)
+AptPackage('ninja-build', package='ninja-build',)
+AptPackage('pkg-config', package='pkg-config',)
+AptPackage('clang-14', package='clang-14',)
+AptPackage('libc-14-dev', package='libc++-14-dev',)
+AptPackage('libcabi-14-dev', package='libc++abi-14-dev',)
+AptPackage('libc-ares-dev', package='libc-ares-dev',)
+AptPackage('libssl-dev', package='libssl-dev',)
+AptPackage('zlib1g-dev', package='zlib1g-dev',)
+AptPackage('curl', package='curl',
+           build_params={'extra_link_flags': ['-lcurl']})
+AptPackage('libcurl4-openssl-dev', package='libcurl4-openssl-dev',
+           build_params={'extra_link_flags': ['-lcurl']})
+
+#RUN apt-get update && \
+#    apt-get --no-install-recommends install -y ca-certificates curl git tar zip unzip
+TargetGroup(
+    'step1',
+    deps=[
+        ':ca-certificates',
+        ':curl',
+        ':git',
+        ':tar',
+        ':zip',
+        ':unzip',
+    ]
+)
+
+#RUN apt-get update && \
+#    apt-get --no-install-recommends install -y build-essential ccache cmake ninja-build pkg-config
+TargetGroup(
+    'step2',
+    deps=[
+      ':step1',
+      ':build-essential',
+      ':ccache',
+      ':cmake',
+      ':ninja-build',
+      ':pkg-config',
+    ]
+)
+#RUN apt-get update && \
+#    apt-get --no-install-recommends install -y clang-14 libc++-14-dev libc++abi-14-dev
+TargetGroup(
+    'step3',
+    deps=[
+      ':step2',
+      ':clang-14',
+      ':libc-14-dev',
+      ':libcabi-14-dev',
+    ]
+)
+DockerImage(
+    'ubuntu-22.04-plus',
+    base_image=':ubuntu-22.04',
+    deps=[
+      ':step1',
+      ':step2',
+      ':step3',
+    ],
+)
+
+# WORKDIR /var/tmp/build/abseil-cpp
+# RUN curl -sSL https://github.com/abseil/abseil-cpp/archive/20211102.0.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_TESTING=OFF \
+#       -DBUILD_SHARED_LIBS=yes \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -G Ninja -S . -B cmake-out && \
+#     cmake --build cmake-out  && \
+#     cmake --build cmake-out --target install  && \
+#     ldconfig
+TargetGroup(
+    'step4',
+    deps=[
+      ':step3',
+      '//3rdparty/misc:abseil',
+    ]
+)
+
+# WORKDIR /var/tmp/build/protobuf
+# RUN curl -sSL https://github.com/protocolbuffers/protobuf/archive/v3.20.1.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_SHARED_LIBS=yes \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -Dprotobuf_BUILD_TESTS=OFF \
+#       -G Ninja -S cmake -Bcmake-out && \
+#     cmake --build cmake-out  && \
+#     cmake --build cmake-out --target install  && \
+#     ldconfig
+TargetGroup(
+    'step5',
+    deps=[
+      ':step4',
+      '//3rdparty/misc:protobuf',
+    ]
+)
+
+# WORKDIR /var/tmp/build/re2
+# RUN curl -sSL https://github.com/google/re2/archive/2022-04-01.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_SHARED_LIBS=ON \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -DRE2_BUILD_TESTING=OFF \
+#       -S . -B cmake-out -GNinja && \
+#     cmake --build cmake-out && \
+#     cmake --install cmake-out && \
+#     ldconfig
+TargetGroup(
+    'step6',
+    deps=[
+      ':step5',
+      '//3rdparty/misc:re2',
+    ]
+)
+
+#RUN apt-get update && apt-get --no-install-recommends install -y libc-ares-dev
+TargetGroup(
+    'step7',
+    deps=[
+      ':step6',
+      ':libc-ares-dev',
+    ]
+)
+
+#RUN apt-get update && apt-get --no-install-recommends install -y libssl-dev zlib1g-dev
+TargetGroup(
+    'step8',
+    deps=[
+      ':step7',
+      ':libssl-dev',
+      ':zlib1g-dev',
+    ]
+)
+
+# WORKDIR /var/tmp/build/grpc
+# RUN curl -sSL https://github.com/grpc/grpc/archive/v1.46.3.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_SHARED_LIBS=yes \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -DgRPC_INSTALL=ON \
+#       -DgRPC_BUILD_TESTS=OFF \
+#       -DgRPC_ABSL_PROVIDER=package \
+#       -DgRPC_CARES_PROVIDER=package \
+#       -DgRPC_PROTOBUF_PROVIDER=package \
+#       -DgRPC_RE2_PROVIDER=package \
+#       -DgRPC_SSL_PROVIDER=package \
+#       -DgRPC_ZLIB_PROVIDER=package \
+#       -G Ninja -S . -Bcmake-out && \
+#     cmake --build cmake-out  && \
+#     cmake --build cmake-out --target install  && \
+#     ldconfig
+TargetGroup(
+    'step9',
+    deps=[
+      ':step8',
+      '//3rdparty/misc:grpc',
+    ]
+)
+
+# WORKDIR /var/tmp/build/crc32c
+# RUN curl -sSL https://github.com/google/crc32c/archive/1.1.2.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_SHARED_LIBS=yes \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -DCRC32C_BUILD_TESTS=OFF \
+#       -DCRC32C_BUILD_BENCHMARKS=OFF \
+#       -DCRC32C_USE_GLOG=OFF \
+#       -G Ninja -S . -Bcmake-out && \
+#     cmake --build cmake-out  && \
+#     cmake --build cmake-out --target install  && \
+#     ldconfig
+TargetGroup(
+    'step10',
+    deps=[
+      ':step9',
+      '//3rdparty/misc:crc32',
+    ]
+)
+
+# WORKDIR /var/tmp/build/json
+# RUN curl -sSL https://github.com/nlohmann/json/archive/v3.10.5.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_SHARED_LIBS=yes \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -DBUILD_TESTING=OFF \
+#       -DJSON_BuildTests=OFF \
+#       -G Ninja -S . -Bcmake-out/nlohmann/json && \
+#     cmake --build cmake-out/nlohmann/json --target install  && \
+#     ldconfig
+TargetGroup(
+    'step11',
+    deps=[
+      ':step10',
+      '//3rdparty/misc:nlohmann-json',
+    ]
+)
+
+#RUN apt-get update && apt-get --no-install-recommends install -y libcurl4-openssl-dev
+TargetGroup(
+    'step12',
+    deps=[
+      ':step11',
+      ':libcurl4-openssl-dev',
+    ]
+)
+
+# WORKDIR /var/tmp/build/google-cloud-cpp
+# RUN curl -sSL https://github.com/googleapis/google-cloud-cpp/archive/v1.40.2.tar.gz | \
+#     tar -xzf - --strip-components=1 && \
+#     cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DBUILD_SHARED_LIBS=yes \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_C_COMPILER=clang-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -DBUILD_TESTING=OFF \
+#       -G Ninja -S . -B cmake-out && \
+#     cmake --build cmake-out --target install  && \
+#     ldconfig
+TargetGroup(
+    'step13',
+    deps=[
+      ':step12',
+      '//3rdparty/misc:google-cloud-cpp',
+    ]
+)
+DockerImage(
+  'dockerfile-steps',
+  base_image=':ubuntu-22.04',
+  deps=[
+    ':step13',
+  ],
+)
+
+# RUN ldconfig /usr/local/lib*
+
+
+# WORKDIR /var/tmp/build/test
+# COPY . /var/tmp/build/test
+
+# RUN cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DCMAKE_CXX_COMPILER=clang++-14 \
+#       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+#       -G Ninja -S . -B cmake-out && \
+#     cmake --build cmake-out

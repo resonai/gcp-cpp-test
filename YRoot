@@ -10,6 +10,7 @@ ExtDockerImage(
         'description': 'Ubuntu 22.04.4 LTS',
     }
 )
+
 DockerImage(
     'ubuntu-22.04-plus',
     base_image=':ubuntu-22.04',
@@ -87,4 +88,15 @@ CppApp(
       'HOME': '/h',
     }
   },
+)
+
+CppProg(
+  'repro2',
+  sources='repro.cc',
+  deps=[
+    '//3rdparty/misc:google-cloud-cpp',
+  ],
+  build_params={
+  },
+  in_buildenv='//google-image:dockerfile-steps',
 )
