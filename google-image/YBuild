@@ -46,6 +46,13 @@ TargetGroup(
         ':unzip',
     ]
 )
+DockerImage(
+    'img-step1',
+    base_image=':ubuntu-22.04',
+    deps=[
+      ':step1',
+    ],
+)
 
 #RUN apt-get update && \
 #    apt-get --no-install-recommends install -y build-essential ccache cmake ninja-build pkg-config
@@ -60,6 +67,13 @@ TargetGroup(
       ':pkg-config',
     ]
 )
+DockerImage(
+    'img-step2',
+    base_image=':img-step1',
+    deps=[
+      ':step2',
+    ],
+)
 #RUN apt-get update && \
 #    apt-get --no-install-recommends install -y clang-14 libc++-14-dev libc++abi-14-dev
 TargetGroup(
@@ -72,11 +86,9 @@ TargetGroup(
     ]
 )
 DockerImage(
-    'ubuntu-22.04-plus',
-    base_image=':ubuntu-22.04',
+    'img-step3',
+    base_image=':img-step2',
     deps=[
-      ':step1',
-      ':step2',
       ':step3',
     ],
 )
@@ -102,6 +114,13 @@ TargetGroup(
       '//3rdparty/misc:abseil',
     ]
 )
+DockerImage(
+    'img-step4',
+    base_image=':img-step3',
+    deps=[
+      ':step4',
+    ],
+)
 
 # WORKDIR /var/tmp/build/protobuf
 # RUN curl -sSL https://github.com/protocolbuffers/protobuf/archive/v3.20.1.tar.gz | \
@@ -124,6 +143,13 @@ TargetGroup(
       '//3rdparty/misc:protobuf',
     ]
 )
+DockerImage(
+    'img-step5',
+    base_image=':img-step4',
+    deps=[
+      ':step5',
+    ],
+)
 
 # WORKDIR /var/tmp/build/re2
 # RUN curl -sSL https://github.com/google/re2/archive/2022-04-01.tar.gz | \
@@ -145,6 +171,13 @@ TargetGroup(
       '//3rdparty/misc:re2',
     ]
 )
+DockerImage(
+    'img-step6',
+    base_image=':img-step5',
+    deps=[
+      ':step6',
+    ],
+)
 
 #RUN apt-get update && apt-get --no-install-recommends install -y libc-ares-dev
 TargetGroup(
@@ -153,6 +186,13 @@ TargetGroup(
       ':step6',
       ':libc-ares-dev',
     ]
+)
+DockerImage(
+    'img-step7',
+    base_image=':img-step6',
+    deps=[
+      ':step7',
+    ],
 )
 
 #RUN apt-get update && apt-get --no-install-recommends install -y libssl-dev zlib1g-dev
@@ -163,6 +203,13 @@ TargetGroup(
       ':libssl-dev',
       ':zlib1g-dev',
     ]
+)
+DockerImage(
+    'img-step8',
+    base_image=':img-step7',
+    deps=[
+      ':step8',
+    ],
 )
 
 # WORKDIR /var/tmp/build/grpc
@@ -193,6 +240,13 @@ TargetGroup(
       '//3rdparty/misc:grpc',
     ]
 )
+DockerImage(
+    'img-step9',
+    base_image=':img-step8',
+    deps=[
+      ':step9',
+    ],
+)
 
 # WORKDIR /var/tmp/build/crc32c
 # RUN curl -sSL https://github.com/google/crc32c/archive/1.1.2.tar.gz | \
@@ -217,6 +271,13 @@ TargetGroup(
       '//3rdparty/misc:crc32',
     ]
 )
+DockerImage(
+    'img-step10',
+    base_image=':img-step9',
+    deps=[
+      ':step10',
+    ],
+)
 
 # WORKDIR /var/tmp/build/json
 # RUN curl -sSL https://github.com/nlohmann/json/archive/v3.10.5.tar.gz | \
@@ -239,6 +300,13 @@ TargetGroup(
       '//3rdparty/misc:nlohmann-json',
     ]
 )
+DockerImage(
+    'img-step11',
+    base_image=':img-step10',
+    deps=[
+      ':step11',
+    ],
+)
 
 #RUN apt-get update && apt-get --no-install-recommends install -y libcurl4-openssl-dev
 TargetGroup(
@@ -247,6 +315,13 @@ TargetGroup(
       ':step11',
       ':libcurl4-openssl-dev',
     ]
+)
+DockerImage(
+    'img-step12',
+    base_image=':img-step11',
+    deps=[
+      ':step12',
+    ],
 )
 
 # WORKDIR /var/tmp/build/google-cloud-cpp
@@ -275,6 +350,13 @@ DockerImage(
   deps=[
     ':step13',
   ],
+)
+DockerImage(
+    'img-step13',
+    base_image=':img-step12',
+    deps=[
+      ':step13',
+    ],
 )
 
 # RUN ldconfig /usr/local/lib*

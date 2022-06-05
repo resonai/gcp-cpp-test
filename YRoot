@@ -100,3 +100,13 @@ CppProg(
   },
   in_buildenv='//google-image:dockerfile-steps',
 )
+CppProg(
+  'repro3',
+  sources='repro.cc',
+  deps=[
+    '//3rdparty/misc:google-cloud-cpp',
+  ],
+  build_params={
+  },
+  in_buildenv='//google-image:img-step13',
+)
