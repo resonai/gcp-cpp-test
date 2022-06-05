@@ -20,34 +20,34 @@
 
 
 AptPackage(
-  'libc-14-dev',
-  package='libc++-14-dev',
+  'libc-13-dev',
+  package='libc++-13-dev',
   deps=[
-    '//3rdparty/apt:llvm-14-repository',
+    '//3rdparty/apt:llvm-13-repository',
   ],
 )
 
 AptPackage(
-  'libcabi-14-dev',
-  package='libc++abi-14-dev',
+  'libcabi-13-dev',
+  package='libc++abi-13-dev',
   deps=[
-    '//3rdparty/apt:llvm-14-repository',
+    '//3rdparty/apt:llvm-13-repository',
   ],
 )
 AptPackage(
-  'clang-14',
-  package='clang-14',
+  'clang-13',
+  package='clang-13',
   deps=[
-    '//3rdparty/apt:llvm-14-repository',
-    ':libc-14-dev',
-    ':libcabi-14-dev',
+    '//3rdparty/apt:llvm-13-repository',
+    ':libc-13-dev',
+    ':libcabi-13-dev',
   ],
 )
 CustomInstaller(
   'clang',
   uri='',
   deps=[
-    ':clang-14',
+    ':clang-13',
   ],
   script='install-llvm.sh',
 )
