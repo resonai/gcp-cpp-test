@@ -1,0 +1,26 @@
+
+Proto(
+  'test_proto',
+  sources='test.proto',
+  deps=[],
+  in_buildenv='//:google-cloud-cpp-test-image',
+  gen_cpp=True,
+)
+CppLib('test_proto_lib',
+       sources='',
+       deps=[
+         '//3rdparty/misc:protobuf',
+       ],
+       protos=':test_proto',
+       in_buildenv='//:google-cloud-cpp-test-image')
+
+CppProg(
+  'test',
+  sources='test.cc',
+  deps=[
+    ':test_proto_lib',
+  ],
+  build_params={
+  },
+  in_buildenv='//:google-cloud-cpp-test-image'
+)
