@@ -9,6 +9,7 @@ cd google-cloud-cpp-1.40.2
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+      -DCMAKE_CXX_STANDARD=17 \
       -DBUILD_TESTING=OFF \
       -G Ninja -S . -B cmake-out && \
     cmake --build cmake-out --target install  && \

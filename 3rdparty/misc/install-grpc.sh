@@ -9,6 +9,7 @@ cd grpc-1.46.3/
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+      -DCMAKE_CXX_STANDARD=17 \
       -DgRPC_INSTALL=ON \
       -DgRPC_BUILD_TESTS=OFF \
       -DgRPC_ABSL_PROVIDER=package \

@@ -8,6 +8,7 @@ cd re2-2022-04-01/
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+      -DCMAKE_CXX_STANDARD=17 \
       -DRE2_BUILD_TESTING=OFF \
       -S . -B cmake-out -GNinja && \
     cmake --build cmake-out && \

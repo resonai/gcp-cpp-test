@@ -8,6 +8,7 @@ cd crc32c-1.1.2/
       -DCMAKE_CXX_COMPILER=clang++ \
       -DCMAKE_C_COMPILER=clang \
       -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+      -DCMAKE_CXX_STANDARD=17 \
       -DCRC32C_BUILD_TESTS=OFF \
       -DCRC32C_BUILD_BENCHMARKS=OFF \
       -DCRC32C_USE_GLOG=OFF \
