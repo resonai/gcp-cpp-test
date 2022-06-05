@@ -14,6 +14,21 @@ int main(int argc, char* argv[]) try {
   auto const prefix = std::string(argv[2]);
 
   auto client = gcs::Client();
+  std::cout << "before read object\n";
+  gcs::ObjectReadStream stream =
+      client.ReadObject(bucket_name, prefix + "/test1");
+  if (!stream.status().ok()) {
+    std::cout << "Can't read " << "test1" << ": "
+              << stream.status().message();
+    return -1;
+  } else {
+    std::string out_buffer;
+    out_buffer.append((std::istreambuf_iterator<char>(stream)),
+                      std::istreambuf_iterator<char>());
+    std::cout << "Read : " << out_buffer << std::endl;
+  }
+
+
 
   std::cout << "before list objects\n";
   auto reader = client.ListObjects(bucket_name, gcs::Prefix(prefix));
